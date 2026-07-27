@@ -8,6 +8,8 @@ This repo is a **portfolio piece demonstrating a realistic bug-fix workflow**:
 the app was built in two stages, with a genuine null-reference bug shipped
 first and then properly diagnosed and fixed, each as its own tagged commit.
 
+**Live demo:** http://order-flow.runasp.net
+
 - [`before-fix`](../../tree/before-fix) — the app as originally shipped, bug included
 - [`after-fix`](../../tree/after-fix) — the same app with the bug fixed and a regression test added
 
@@ -218,5 +220,4 @@ before it ever reached the seed data, let alone production.
 
 ## Live demo
 
-_Deployed to MonsterASP.NET — see the live URL at the top of this repo's
-About section (or ask the maintainer)._
+Deployed to MonsterASP.NET: http://order-flow.runasp.net
