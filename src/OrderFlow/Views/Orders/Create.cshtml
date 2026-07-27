@@ -1,0 +1,21 @@
+@model OrderFormViewModel
+@{
+    ViewData["Title"] = "New Order";
+}
+
+<div class="page-header">
+    <div>
+        <h1>New order</h1>
+        <p class="page-header__subtitle">Create an order for a customer.</p>
+    </div>
+</div>
+
+<div class="card">
+    <form asp-action="Create" method="post">
+        @await Html.PartialAsync("_OrderForm", Model)
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

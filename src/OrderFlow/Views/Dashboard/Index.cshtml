@@ -1,0 +1,58 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p class="page-header__subtitle">A snapshot of orders across the business.</p>
+    </div>
+    <a class="btn btn--accent" asp-controller="Orders" asp-action="Create">+ New Order</a>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card stat-card--accent">
+        <div class="stat-card__label">Total Revenue</div>
+        <div class="stat-card__value">@Model.TotalRevenue.ToString("C")</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__label">Total Orders</div>
+        <div class="stat-card__value">@Model.OrderCount</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__label">Average Order Value</div>
+        <div class="stat-card__value">@Model.AverageOrderValue.ToString("C")</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-card__label">Pending Orders</div>
+        <div class="stat-card__value">@Model.PendingOrderCount</div>
+    </div>
+</div>
+
+<h2>Recent orders</h2>
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model.RecentOrders)
+            {
+                <tr>
+                    <td><a asp-controller="Orders" asp-action="Details" asp-route-id="@order.Id">#@order.Id</a></td>
+                    <td>@order.Customer?.Name</td>
+                    <td>@order.OrderDate.ToString("MMM d, yyyy")</td>
+                    <td>@await Html.PartialAsync("_StatusBadge", order.Status)</td>
+                    <td class="text-right mono">@order.TotalAmount.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

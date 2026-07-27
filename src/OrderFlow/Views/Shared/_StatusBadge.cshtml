@@ -1,0 +1,13 @@
+@model OrderStatus
+@{
+    var cssClass = Model switch
+    {
+        OrderStatus.Pending => "badge--pending",
+        OrderStatus.Processing => "badge--processing",
+        OrderStatus.Shipped => "badge--shipped",
+        OrderStatus.Completed => "badge--completed",
+        OrderStatus.Cancelled => "badge--cancelled",
+        _ => "badge--pending",
+    };
+}
+<span class="badge @cssClass">@Model</span>

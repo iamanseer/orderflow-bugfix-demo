@@ -1,0 +1,21 @@
+## .NET
+bin/
+obj/
+*.user
+
+## SQLite runtime databases (recreated automatically on first run)
+*.db
+*.db-shm
+*.db-wal
+
+## IDE
+.vs/
+.vscode/
+.idea/
+
+## OS
+.DS_Store
+
+## Publish output
+publish/
+*.zip

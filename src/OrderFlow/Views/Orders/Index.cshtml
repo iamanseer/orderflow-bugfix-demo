@@ -1,0 +1,58 @@
+@model List<Order>
+@{
+    ViewData["Title"] = "Orders";
+    OrderStatus? selected = ViewBag.SelectedStatus;
+}
+
+<div class="page-header">
+    <div>
+        <h1>Orders</h1>
+        <p class="page-header__subtitle">@Model.Count order@(Model.Count == 1 ? "" : "s") @(selected.HasValue ? $"with status {selected}" : "across all statuses")</p>
+    </div>
+    <a class="btn btn--accent" asp-controller="Orders" asp-action="Create">+ New Order</a>
+</div>
+
+<div class="filter-bar">
+    <a class="filter-pill @(selected is null ? "is-active" : "")" asp-action="Index">All</a>
+    @foreach (var status in Enum.GetValues<OrderStatus>())
+    {
+        <a class="filter-pill @(selected == status ? "is-active" : "")" asp-action="Index" asp-route-status="@status">@status</a>
+    }
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="card empty-state">No orders match this filter yet.</div>
+}
+else
+{
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Status</th>
+                    <th class="text-right">Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@order.Id">#@order.Id</a></td>
+                        <td>@order.Customer?.Name</td>
+                        <td>@order.OrderDate.ToString("MMM d, yyyy")</td>
+                        <td class="text-muted">@order.OrderItems.Count</td>
+                        <td>@await Html.PartialAsync("_StatusBadge", order.Status)</td>
+                        <td class="text-right mono">@order.TotalAmount.ToString("C")</td>
+                        <td class="text-right"><a class="btn btn--ghost btn--sm" asp-action="Edit" asp-route-id="@order.Id">Edit</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

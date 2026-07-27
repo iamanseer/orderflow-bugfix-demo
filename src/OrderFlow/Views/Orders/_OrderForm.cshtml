@@ -1,0 +1,53 @@
+@model OrderFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+<div class="form-grid">
+    <div class="form-group">
+        <label asp-for="CustomerId">Customer</label>
+        <select asp-for="CustomerId" asp-items="Model.CustomerOptions">
+            <option value="">-- Select a customer --</option>
+        </select>
+        <span asp-validation-for="CustomerId" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="OrderDate">Order date</label>
+        <input asp-for="OrderDate" type="date" />
+        <span asp-validation-for="OrderDate" class="field-validation-error"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status">Status</label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<OrderStatus>()"></select>
+    </div>
+</div>
+
+<div class="form-group">
+    <label asp-for="Notes">Notes</label>
+    <textarea asp-for="Notes" placeholder="Optional internal note about this order"></textarea>
+</div>
+
+<h3>Line items</h3>
+<p class="text-muted" style="margin-top:-8px;">Pick a product and quantity for each item. Leave a row blank to skip it.</p>
+
+<div class="item-rows">
+    @for (var i = 0; i < Model.Items.Count; i++)
+    {
+        <div class="item-row">
+            <div class="form-group" style="margin-bottom:0;">
+                <select asp-for="Items[i].ProductId" asp-items="Model.ProductOptions">
+                    <option value="">-- No product --</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <input asp-for="Items[i].Quantity" type="number" min="0" placeholder="Qty" />
+            </div>
+        </div>
+    }
+</div>
+
+<div class="form-actions">
+    <button type="submit" class="btn btn--accent">Save order</button>
+    <a class="btn btn--ghost" asp-action="Index">Cancel</a>
+</div>

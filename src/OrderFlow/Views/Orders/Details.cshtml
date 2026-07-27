@@ -1,0 +1,77 @@
+@model Order
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Order #@Model.Id</h1>
+        <p class="page-header__subtitle">Placed @Model.OrderDate.ToString("MMMM d, yyyy") for @Model.Customer?.Name</p>
+    </div>
+    <div class="form-actions" style="margin-top:0;">
+        <a class="btn btn--ghost" asp-action="Index">&larr; Back to orders</a>
+        <a class="btn btn--primary" asp-action="Edit" asp-route-id="@Model.Id">Edit order</a>
+    </div>
+</div>
+
+<div class="detail-grid">
+    <div class="card">
+        <h3>Line items</h3>
+        <div class="table-wrap" style="box-shadow:none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th class="text-right">Qty</th>
+                        <th class="text-right">Unit price</th>
+                        <th class="text-right">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <tr>
+                            <td>
+                                @item.ProductNameSnapshot
+                                @if (item.Product is null)
+                                {
+                                    <div class="text-muted" style="font-size:0.8rem;">Product no longer in catalog</div>
+                                }
+                            </td>
+                            <td class="text-right">@item.Quantity</td>
+                            <td class="text-right mono">@(item.Product?.Price.ToString("C") ?? "—")</td>
+                            <td class="text-right mono">@item.LineTotal.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="total-row">
+            <span>Total</span>
+            <span>@Model.TotalAmount.ToString("C")</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Summary</h3>
+        <div class="summary-row">
+            <span class="summary-row__label">Status</span>
+            @await Html.PartialAsync("_StatusBadge", Model.Status)
+        </div>
+        <div class="summary-row">
+            <span class="summary-row__label">Customer</span>
+            <span>@Model.Customer?.Name</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-row__label">Email</span>
+            <span>@Model.Customer?.Email</span>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.Notes))
+        {
+            <div class="summary-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
+                <span class="summary-row__label">Notes</span>
+                <span>@Model.Notes</span>
+            </div>
+        }
+    </div>
+</div>

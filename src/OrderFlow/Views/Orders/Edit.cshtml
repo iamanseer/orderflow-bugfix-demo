@@ -1,0 +1,21 @@
+@model OrderFormViewModel
+@{
+    ViewData["Title"] = $"Edit Order #{Model.Id}";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Edit order #@Model.Id</h1>
+        <p class="page-header__subtitle">Update items, status, or notes.</p>
+    </div>
+</div>
+
+<div class="card">
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+        @await Html.PartialAsync("_OrderForm", Model)
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
