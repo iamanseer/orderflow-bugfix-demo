@@ -10,8 +10,11 @@ public class OrderItem
     public int OrderId { get; set; }
     public Order? Order { get; set; }
 
-    // Nullable because not every imported order line resolves to a catalog
-    // product (see DbInitializer's "legacy import" seed order).
+    // Nullable: not every imported order line resolves to a catalog product
+    // (see DbInitializer's "legacy import" seed order, where a discontinued
+    // SKU no longer matches anything). Product is for catalog linkage and
+    // display only -- it must never be relied on for money math, since it can
+    // legitimately be null, or its Price can drift after the order was placed.
     public int? ProductId { get; set; }
     public Product? Product { get; set; }
 
@@ -21,8 +24,13 @@ public class OrderItem
     [Range(1, 10000)]
     public int Quantity { get; set; }
 
-    // Every order is created against a catalog product, so this assumes
-    // Product is always populated.
+    // Snapshot of the unit price at the moment this line was created. This is
+    // the single source of truth for totals: captured once, up front, so it
+    // survives catalog price changes and never depends on the Product
+    // navigation property being resolvable.
+    [Range(0, 100000)]
+    public decimal UnitPrice { get; set; }
+
     [NotMapped]
-    public decimal LineTotal => Product!.Price * Quantity;
+    public decimal LineTotal => Quantity * UnitPrice;
 }

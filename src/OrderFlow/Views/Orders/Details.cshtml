@@ -39,7 +39,7 @@
                                 }
                             </td>
                             <td class="text-right">@item.Quantity</td>
-                            <td class="text-right mono">@(item.Product?.Price.ToString("C") ?? "—")</td>
+                            <td class="text-right mono">@item.UnitPrice.ToString("C")</td>
                             <td class="text-right mono">@item.LineTotal.ToString("C")</td>
                         </tr>
                     }

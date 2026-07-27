@@ -46,8 +46,8 @@ public static class DbInitializer
                 Status = OrderStatus.Completed,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[0].Id, ProductNameSnapshot = products[0].Name, Quantity = 1 },
-                    new() { ProductId = products[6].Id, ProductNameSnapshot = products[6].Name, Quantity = 2 },
+                    new() { ProductId = products[0].Id, ProductNameSnapshot = products[0].Name, UnitPrice = products[0].Price, Quantity = 1 },
+                    new() { ProductId = products[6].Id, ProductNameSnapshot = products[6].Name, UnitPrice = products[6].Price, Quantity = 2 },
                 }
             },
             new()
@@ -57,7 +57,7 @@ public static class DbInitializer
                 Status = OrderStatus.Shipped,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[2].Id, ProductNameSnapshot = products[2].Name, Quantity = 1 },
+                    new() { ProductId = products[2].Id, ProductNameSnapshot = products[2].Name, UnitPrice = products[2].Price, Quantity = 1 },
                 }
             },
             new()
@@ -67,8 +67,8 @@ public static class DbInitializer
                 Status = OrderStatus.Completed,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[3].Id, ProductNameSnapshot = products[3].Name, Quantity = 1 },
-                    new() { ProductId = products[7].Id, ProductNameSnapshot = products[7].Name, Quantity = 2 },
+                    new() { ProductId = products[3].Id, ProductNameSnapshot = products[3].Name, UnitPrice = products[3].Price, Quantity = 1 },
+                    new() { ProductId = products[7].Id, ProductNameSnapshot = products[7].Name, UnitPrice = products[7].Price, Quantity = 2 },
                 }
             },
             new()
@@ -78,7 +78,7 @@ public static class DbInitializer
                 Status = OrderStatus.Processing,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[4].Id, ProductNameSnapshot = products[4].Name, Quantity = 1 },
+                    new() { ProductId = products[4].Id, ProductNameSnapshot = products[4].Name, UnitPrice = products[4].Price, Quantity = 1 },
                 }
             },
             new()
@@ -88,7 +88,7 @@ public static class DbInitializer
                 Status = OrderStatus.Completed,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[5].Id, ProductNameSnapshot = products[5].Name, Quantity = 1 },
+                    new() { ProductId = products[5].Id, ProductNameSnapshot = products[5].Name, UnitPrice = products[5].Price, Quantity = 1 },
                 }
             },
             new()
@@ -98,8 +98,8 @@ public static class DbInitializer
                 Status = OrderStatus.Pending,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[1].Id, ProductNameSnapshot = products[1].Name, Quantity = 1 },
-                    new() { ProductId = products[6].Id, ProductNameSnapshot = products[6].Name, Quantity = 3 },
+                    new() { ProductId = products[1].Id, ProductNameSnapshot = products[1].Name, UnitPrice = products[1].Price, Quantity = 1 },
+                    new() { ProductId = products[6].Id, ProductNameSnapshot = products[6].Name, UnitPrice = products[6].Price, Quantity = 3 },
                 }
             },
             new()
@@ -109,7 +109,7 @@ public static class DbInitializer
                 Status = OrderStatus.Shipped,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[0].Id, ProductNameSnapshot = products[0].Name, Quantity = 2 },
+                    new() { ProductId = products[0].Id, ProductNameSnapshot = products[0].Name, UnitPrice = products[0].Price, Quantity = 2 },
                 }
             },
             new()
@@ -119,8 +119,8 @@ public static class DbInitializer
                 Status = OrderStatus.Completed,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[3].Id, ProductNameSnapshot = products[3].Name, Quantity = 2 },
-                    new() { ProductId = products[4].Id, ProductNameSnapshot = products[4].Name, Quantity = 1 },
+                    new() { ProductId = products[3].Id, ProductNameSnapshot = products[3].Name, UnitPrice = products[3].Price, Quantity = 2 },
+                    new() { ProductId = products[4].Id, ProductNameSnapshot = products[4].Name, UnitPrice = products[4].Price, Quantity = 1 },
                 }
             },
             new()
@@ -130,15 +130,18 @@ public static class DbInitializer
                 Status = OrderStatus.Pending,
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[7].Id, ProductNameSnapshot = products[7].Name, Quantity = 4 },
+                    new() { ProductId = products[7].Id, ProductNameSnapshot = products[7].Name, UnitPrice = products[7].Price, Quantity = 4 },
                 }
             },
             // Legacy POS import batch: the matching script links order lines to
             // catalog products by SKU. "Bamboo Cutting Board" was discontinued
             // and removed from the catalog before this batch ran, so its SKU no
-            // longer matches anything -- the row still needs to be preserved
-            // for historical reporting, so it comes through with ProductId
-            // left null instead of being dropped.
+            // longer matches anything -- the row still needs to be preserved for
+            // historical reporting, so it comes through with ProductId left null
+            // instead of being dropped. The import file itself still had a price
+            // for the line ($24.00), which is what's captured in UnitPrice below;
+            // that price was always available; the bug was that the original
+            // code never captured it independently of the (missing) product link.
             new()
             {
                 CustomerId = customers[1].Id,
@@ -147,8 +150,8 @@ public static class DbInitializer
                 Notes = "Imported from legacy POS system (batch #2024-11-quarterly).",
                 OrderItems = new List<OrderItem>
                 {
-                    new() { ProductId = products[2].Id, ProductNameSnapshot = products[2].Name, Quantity = 1 },
-                    new() { ProductId = null, ProductNameSnapshot = "Bamboo Cutting Board (legacy SKU LEG-4471, discontinued)", Quantity = 2 },
+                    new() { ProductId = products[2].Id, ProductNameSnapshot = products[2].Name, UnitPrice = products[2].Price, Quantity = 1 },
+                    new() { ProductId = null, ProductNameSnapshot = "Bamboo Cutting Board (legacy SKU LEG-4471, discontinued)", UnitPrice = 24.00m, Quantity = 2 },
                 }
             },
         };

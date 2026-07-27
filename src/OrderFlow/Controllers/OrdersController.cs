@@ -7,6 +7,13 @@ using OrderFlow.ViewModels;
 
 namespace OrderFlow.Controllers;
 
+public class OrderItemValidationException : Exception
+{
+    public OrderItemValidationException(string message) : base(message)
+    {
+    }
+}
+
 public class OrdersController : Controller
 {
     private const int EmptyItemRowCount = 4;
@@ -72,9 +79,18 @@ public class OrdersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(OrderFormViewModel viewModel)
     {
-        var items = await BuildOrderItems(viewModel.Items);
+        List<OrderItem> items;
+        try
+        {
+            items = await BuildOrderItems(viewModel.Items);
+        }
+        catch (OrderItemValidationException ex)
+        {
+            items = new List<OrderItem>();
+            ModelState.AddModelError(string.Empty, ex.Message);
+        }
 
-        if (items.Count == 0)
+        if (items.Count == 0 && ModelState.IsValid)
         {
             ModelState.AddModelError(string.Empty, "Add at least one line item with a product and quantity.");
         }
@@ -150,9 +166,18 @@ public class OrdersController : Controller
             return NotFound();
         }
 
-        var items = await BuildOrderItems(viewModel.Items);
+        List<OrderItem> items;
+        try
+        {
+            items = await BuildOrderItems(viewModel.Items);
+        }
+        catch (OrderItemValidationException ex)
+        {
+            items = new List<OrderItem>();
+            ModelState.AddModelError(string.Empty, ex.Message);
+        }
 
-        if (items.Count == 0)
+        if (items.Count == 0 && ModelState.IsValid)
         {
             ModelState.AddModelError(string.Empty, "Add at least one line item with a product and quantity.");
         }
@@ -201,13 +226,19 @@ public class OrdersController : Controller
         {
             if (!products.TryGetValue(input.ProductId!.Value, out var product))
             {
-                continue;
+                // Every product option in the form is populated straight from
+                // the catalog, so this should be unreachable through normal
+                // use. Reject the submission instead of silently creating a
+                // line item with no price attached to it.
+                throw new OrderItemValidationException(
+                    $"Product {input.ProductId} could not be found. Refresh the page and try again.");
             }
 
             items.Add(new OrderItem
             {
                 ProductId = product.Id,
                 ProductNameSnapshot = product.Name,
+                UnitPrice = product.Price,
                 Quantity = input.Quantity,
             });
         }

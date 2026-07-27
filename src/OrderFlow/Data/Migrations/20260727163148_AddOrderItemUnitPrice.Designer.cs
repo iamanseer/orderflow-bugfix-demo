@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderFlow.Data;
 
@@ -10,9 +11,11 @@ using OrderFlow.Data;
 namespace OrderFlow.Data.Migrations
 {
     [DbContext(typeof(OrderFlowContext))]
-    partial class OrderFlowContextModelSnapshot : ModelSnapshot
+    [Migration("20260727163148_AddOrderItemUnitPrice")]
+    partial class AddOrderItemUnitPrice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
