@@ -1,5 +1,12 @@
+using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using OrderFlow.Data;
+
+// Fix currency/date formatting to en-US regardless of the host server's OS
+// locale, so "$" prices render consistently in every environment.
+var defaultCulture = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = defaultCulture;
+CultureInfo.DefaultThreadCurrentUICulture = defaultCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 
